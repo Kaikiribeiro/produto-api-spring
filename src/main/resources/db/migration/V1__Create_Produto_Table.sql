@@ -1,6 +1,6 @@
--- V1__create_table_produtos.sql
+-- V1__create_produto_table.sql
 CREATE TABLE produto (
-    codigo VARCHAR(10) PRIMARY KEY,
-    nome VARCHAR(100) NOT NULL,
-    preco DOUBLE PRECISION NOT NULL
+    id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    nome VARCHAR(255) NOT NULL,
+    preco DECIMAL(10, 2) NOT NULL
 );

@@ -4,28 +4,23 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Column;
 
 @Entity
 public class Produto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long codigo; // Alterado de String para Long
-
-    @Column(nullable = false, length = 100)
+    private Long id;
     private String nome;
-
-    @Column(nullable = false)
-    private Double preco;
+    private double preco;
 
     // Getters e Setters
-    public Long getCodigo() {
-        return codigo;
+    public Long getId() {
+        return id;
     }
 
-    public void setCodigo(Long codigo) {
-        this.codigo = codigo;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getNome() {
@@ -36,11 +31,11 @@ public class Produto {
         this.nome = nome;
     }
 
-    public Double getPreco() {
+    public double getPreco() {
         return preco;
     }
 
-    public void setPreco(Double preco) {
+    public void setPreco(double preco) {
         this.preco = preco;
     }
 }
