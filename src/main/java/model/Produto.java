@@ -14,7 +14,6 @@ public class Produto {
     private String nome;
     private double preco;
 
-    // Getters e Setters
     public Long getId() {
         return id;
     }

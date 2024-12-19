@@ -3,7 +3,6 @@ package com.exemplo.produto.controller;
 import com.exemplo.produto.model.Produto;
 import com.exemplo.produto.service.ProdutoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,38 +15,38 @@ public class ProdutoController {
     @Autowired
     private ProdutoService produtoService;
 
-    // Listar todos os produtos
     @GetMapping
-    public ResponseEntity<List<Produto>> listarProdutos() {
-        List<Produto> produtos = produtoService.listarTodos();
-        return ResponseEntity.ok(produtos); // Retorna uma resposta com status 200
+    public List<Produto> getAllProdutos() {
+        return produtoService.findAll();
     }
 
-    // Criar um novo produto
-    @PostMapping
-    public ResponseEntity<Produto> criarProduto(@RequestBody Produto produto) {
-        Produto novoProduto = produtoService.salvar(produto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(novoProduto); // Retorna 201 (Created)
-    }
-
-    // Buscar um produto por ID
     @GetMapping("/{id}")
-    public ResponseEntity<Produto> buscarProduto(@PathVariable Long id) {
-        Produto produto = produtoService.buscarPorId(id);
-        if (produto == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // Retorna 404 se não encontrar
-        }
-        return ResponseEntity.ok(produto); // Retorna 200 se encontrar o produto
+    public ResponseEntity<Produto> getProdutoById(@PathVariable Long id) {
+        return produtoService.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    // Deletar um produto por ID
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletarProduto(@PathVariable Long id) {
-        try {
-            produtoService.deletar(id);
-            return ResponseEntity.noContent().build(); // Retorna 204 (No Content) após exclusão
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // Retorna 404 se não encontrar o produto
+    @PostMapping
+    public Produto createProduto(@RequestBody Produto produto) {
+        return produtoService.save(produto);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Produto> updateProduto(@PathVariable Long id, @RequestBody Produto produto) {
+        if (!produtoService.findById(id).isPresent()) {
+            return ResponseEntity.notFound().build();
         }
+        produto.setId(id);
+        return ResponseEntity.ok(produtoService.save(produto));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteProduto(@PathVariable Long id) {
+        if (!produtoService.findById(id).isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+        produtoService.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 }
