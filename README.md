@@ -1,4 +1,3 @@
-
 # Produto API
 
 Este projeto implementa uma **API REST** para gerenciar produtos, utilizando **Spring Boot**, **PostgreSQL**, **Flyway** e **Maven**.
@@ -11,7 +10,7 @@ Antes de começar, você precisa ter os seguintes softwares instalados em sua m�
 - **PostgreSQL** (versão 10 ou superior)
 - **Maven** (versão 3.6 ou superior)
 - **IntelliJ IDEA** (ou outra IDE de sua escolha)
-- **cURL** ou **Postman** (para testar a API)
+- **cURL**, **Postman**, ou **PowerShell** (para testar a API)
 
 ---
 
@@ -33,39 +32,54 @@ Antes de começar, você precisa ter os seguintes softwares instalados em sua m�
 O arquivo `pom.xml` contém as dependências e configurações do Maven. Abaixo estão as dependências que você precisa adicionar:
 
 ```xml
-<project xmlns="http://maven.apache.org/POM/4.0.0">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.exemplo</groupId>
-    <artifactId>produto-api</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <artifactId>produto-backend</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <name>Produto API</name>
+    <description>API backend CRUD com Maven, PostgreSQL, Flyway e Spring Boot</description>
     <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
         <java.version>17</java.version>
         <spring-boot.version>3.1.6</spring-boot.version>
+        <flyway.version>9.22.1</flyway.version>
+        <postgresql.version>42.5.4</postgresql.version>
+        <spring-boot-Start.version>3.4.0</spring-boot-Start.version>
     </properties>
     <dependencies>
-        <!-- Spring Boot Web -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
             <version>${spring-boot.version}</version>
         </dependency>
-        <!-- Spring Boot JPA -->
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
             <version>${spring-boot.version}</version>
         </dependency>
-        <!-- PostgreSQL Driver -->
+
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.6.0</version>
+            <version>${postgresql.version}</version>
         </dependency>
-        <!-- Flyway -->
+
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
-            <version>9.22.1</version>
+            <version>${flyway.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <version>${spring-boot-Start.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
     <build>
@@ -74,6 +88,24 @@ O arquivo `pom.xml` contém as dependências e configurações do Maven. Abaixo 
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring-boot.version}</version>
+                <configuration>
+                    <mainClass>com.exemplo.produto.ProdutoApiApplication</mainClass>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <version>9.22.1</version>
+                <configuration>
+                    <url>jdbc:postgresql://localhost:5432/produto_db</url>
+                    <user>postgres</user>
+                    <password>867921kai</password>
+                    <schemas>public</schemas>
+                    <locations>
+                        <location>classpath:db/migration</location>
+                    </locations>
+                </configuration>
             </plugin>
         </plugins>
     </build>
@@ -252,9 +284,9 @@ CREATE TABLE produto (
 );
 ```
 
-### 6. Testando a API com cURL
+### 6. Testando a API com cURL ou PowerShell
 
-Após iniciar a aplicação, você pode testá-la com **cURL** ou **Postman**.
+Após iniciar a aplicação, você pode testá-la com **cURL**, **Postman**, ou **PowerShell**.
 
 #### 6.0 Iniciar a aplicação
 
@@ -262,37 +294,28 @@ Após iniciar a aplicação, você pode testá-la com **cURL** ou **Postman**.
 mvn spring-boot:run
 ```
 
-#### 6.1 Criar um produto
+#### 6.1 Criar um produto com cURL ou PowerShell
 
 ```bash
-curl -X POST http://localhost:8080/api/produtos \
--H "Content-Type: application/json" \
--d '{
-    "nome": "Produto A",
-    "preco": 100.50
-}'
+Invoke-WebRequest -Uri "http://localhost:8080/api/produtos" -Method POST -Body '{"nome": "Produto A", "preco": 100.50}' -Headers @{ "Content-Type" = "application/json" }
 ```
 
-#### 6.2 Listar produtos
+#### 6.2 Listar produtos com cURL ou PowerShell
 
 ```bash
-curl -X GET http://localhost:8080/api/produtos
+Invoke-WebRequest -Uri "http://localhost:8080/api/produtos" -Method GET
 ```
 
-#### 6.3 Buscar por ID
+#### 6.3 Buscar por ID com cURL ou PowerShell
 
 ```bash
-curl -X GET http://localhost:8080/api/produtos/1
+Invoke-WebRequest -Uri "http://localhost:8080/api/produtos/1" -Method GET
 ```
 
-#### 6.4 Deletar por ID
+#### 6.4
+
+Deletar produto com cURL ou PowerShell
 
 ```bash
-curl -X DELETE http://localhost:8080/api/produtos/1
+Invoke-WebRequest -Uri "http://localhost:8080/api/produtos/1" -Method DELETE
 ```
-
-### 7. Conclusão
-
-Esse projeto abrange todos os passos, desde a criação até os testes usando cURL. Você pode expandir adicionando autenticação, validação ou outros recursos.
-
-
